@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: vn.demo.starter.StarterApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.78 s -- in vn.demo.starter.StarterApplicationTests
