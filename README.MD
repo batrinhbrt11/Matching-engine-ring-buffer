@@ -1,15 +1,12 @@
 # Setup
 
-Nodejs 20
-Maven 3.8.6
-Java 17
-Mysql
+Nodejs 20,
+Maven 3.8.6,
+Java 17,
+Mysql,
 Yarn 1.22.22
 
 # Set up db
-
-# Run source code
-
 Rewrite database config in application-local.yml
 
 ```
@@ -20,7 +17,7 @@ spring:
     username: <username>
     password: <password>
 ```
-
+# Run source code
 ## BE
 
 ```
