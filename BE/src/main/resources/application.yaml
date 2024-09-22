@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active:
-      local
   application:
     name: starter-service
   main:
@@ -12,9 +9,9 @@ spring:
       max-request-size: 500MB
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: ${DB_URL:}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    url: jdbc:mysql://mysql-27979e6b-trinhnguyenleba-14e8.c.aivencloud.com:23344/defaultdb?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: avnadmin
+    password: AVNS_ZMZt2RaP0JQhI2V0fQg
     hikari:
       maximum-pool-size: ${DB_MAX_POOL_SIZE:50}
       poolName: Hikari
@@ -26,7 +23,7 @@ spring:
         useServerPrepStmts: true
   data:
     mongodb:
-      uri: ${MONGODB_URI:}
+      uri: mongodb+srv://trinhbrt11:WM4PDARQCztPs6y0@test.lrtjipd.mongodb.net/demo-chat?retryWrites=true&w=majority
   jpa:
     show-sql: false
     open-in-view: false
@@ -71,8 +68,8 @@ application:
     allowed-headers: ${ALLOWED_HEADERS:*}
   security:
     jwt:
-      secret: ${JWT_SECRET:}
-      access-token-in-minutes: ${JWT_ACCESS_TOKEN_IN_MINUTES:120}
+      secret: ${JWT_SECRET:X85CsAp6jk0slfJ2r67b0zy8IGPK/Zx6Pi6QT9Of76zy0zGws4cEF1Gn52LAaLxC1tbgVi5hQTTEks1tjZTinQ==}
+      access-token-in-minutes: ${JWT_ACCESS_TOKEN_IN_MINUTES:7200}
       refresh-token-in-hours: ${JWT_REFRESH_TOKEN_IN_HOURS:24}
   register-email:
     expired-hour: ${REGISTER_TOKEN_EXPIRED_HOURS:48}
