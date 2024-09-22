@@ -88,6 +88,7 @@ public class P2POrderServiceImpl implements P2POrderService {
         UserWallet userWallet = userWalletService.getWalletByUser(user);
         BigDecimal calculateBalance = request.getAssetAmount().multiply(request.getPrice());
         userWalletService.checkAvailableBalance(userWallet.getId(), calculateBalance);
+        // Freeze balance, reduce available balance and increase freeze balance
         userWalletService.updateBalance(userWallet.getId(), calculateBalance.multiply(BigDecimal.valueOf(-1)), calculateBalance);
     }
 
@@ -98,6 +99,7 @@ public class P2POrderServiceImpl implements P2POrderService {
 
         UserCryptoWallet userWallet = userCryptoWalletService.getWalletByUserAndAsset(user, asset);
         userCryptoWalletService.checkAvailableBalance(userWallet.getId(), request.getAssetAmount());
+        // Freeze balance, reduce available balance and increase freeze balance
         userCryptoWalletService.updateBalance(userWallet.getId(), request.getAssetAmount().multiply(BigDecimal.valueOf(-1)), request.getAssetAmount());
     }
 
