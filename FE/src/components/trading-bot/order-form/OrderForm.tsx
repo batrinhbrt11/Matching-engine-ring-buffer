@@ -2,7 +2,7 @@
 
 import Button from '@/components/ui/button/button';
 import Input from '@/components/ui/forms/input';
-import { Asset } from '@/models/wallet';
+import { Asset, Wallet } from '@/models/wallet';
 import { useMemo, useState } from 'react';
 import { Tab, TabPanels, TabPanel } from '@/components/ui/tab';
 import classNames from 'classnames';
@@ -16,6 +16,10 @@ import orderApi from '@/api/orderApi';
 
 interface OrderFormProps {
   asset: Asset;
+  cryptoWallets: Wallet[];
+  fiatWallet: Wallet;
+  getWallet: () => void;
+  getCryptoWallet: () => void;
 }
 
 const tabMenu = [
@@ -29,7 +33,13 @@ const tabMenu = [
   },
 ];
 
-export default function OrderForm({ asset }: OrderFormProps) {
+export default function OrderForm({
+  asset,
+  cryptoWallets,
+  fiatWallet,
+  getWallet,
+  getCryptoWallet,
+}: OrderFormProps) {
   const [selectedTab, setSelectedTab] = useState(tabMenu[0]);
   const [formData, setFormData] = useState({
     price: '',
@@ -56,6 +66,8 @@ export default function OrderForm({ asset }: OrderFormProps) {
         price: '',
         assetAmount: '',
       });
+      getWallet();
+      getCryptoWallet();
     }
   };
 
@@ -128,6 +140,7 @@ export default function OrderForm({ asset }: OrderFormProps) {
                 </span>
               </div>
             </div>
+
             <div className="text-sm font-normal">
               <p className="mb-2 text-[#111827] dark:text-white sm:mb-3">
                 Amount ({asset.coin.symbol})
@@ -168,6 +181,19 @@ export default function OrderForm({ asset }: OrderFormProps) {
                   USDT
                 </span>
               </div>
+            </div>
+            <div className="text-sm font-normal flex justify-between">
+              <p>Fiat Balance:</p>
+              <p>{fiatWallet.availableBalance}</p>
+            </div>
+            <div className="text-sm font-normal flex justify-between">
+              <p> {asset.coin.symbol} Balance:</p>
+              <p>
+                {
+                  cryptoWallets.find((c) => c.assetDto.id === asset.id)
+                    ?.availableBalance
+                }
+              </p>
             </div>
           </div>
         </div>

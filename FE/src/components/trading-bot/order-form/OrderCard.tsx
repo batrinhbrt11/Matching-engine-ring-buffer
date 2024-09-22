@@ -1,4 +1,5 @@
 import { OrderResponse } from '@/models/order';
+import classNames from 'classnames';
 
 interface OrderCardProps {
   details: OrderResponse;
@@ -6,12 +7,16 @@ interface OrderCardProps {
 
 export default function OrderCard({ details }: OrderCardProps) {
   return (
-    <div className="rounded-lg border border-[#E2E8F0] bg-gray-100 dark:border-gray-700 dark:bg-light-dark dark:shadow-card">
+    <div
+      className={classNames(
+        'rounded-lg border border-[#E2E8F0] bg-gray-100 dark:border-gray-700 dark:bg-light-dark dark:shadow-card',
+      )}
+    >
       <div className="p-3 pb-4">
         <div className="mb-4 flex items-start justify-between">
           <div className="text-sm font-medium uppercase">
             <h2 className="mb-1 text-[#111827] dark:text-white">
-              {details.asset.chain.symbol}/ {details.asset.coin.symbol}
+              {details.asset.coin.symbol}/USD
             </h2>
             <p className="text-gray-500 dark:text-gray-400">
               {details.orderType}

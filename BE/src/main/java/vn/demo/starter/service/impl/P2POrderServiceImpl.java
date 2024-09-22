@@ -67,6 +67,7 @@ public class P2POrderServiceImpl implements P2POrderService {
                                         .user(user)
                                         .build()
         );
+        // Add order to matching engine
         matchingEngineService.receiveOrder(newOrder);
         log.info("Create order success, orderId: {}", newOrder.getId());
     }
@@ -80,6 +81,9 @@ public class P2POrderServiceImpl implements P2POrderService {
                 .toList();
     }
 
+    /**
+     * Freeze user's balance
+     */
     private void buyOrder(P2POrderRequestDto request,  User user) {
         UserWallet userWallet = userWalletService.getWalletByUser(user);
         BigDecimal calculateBalance = request.getAssetAmount().multiply(request.getPrice());
@@ -87,6 +91,9 @@ public class P2POrderServiceImpl implements P2POrderService {
         userWalletService.updateBalance(userWallet.getId(), calculateBalance.multiply(BigDecimal.valueOf(-1)), calculateBalance);
     }
 
+    /**
+     * Freeze user's balance when create sell order 
+     */
     private void sellOrder(P2POrderRequestDto request,  User user, Asset asset) {
 
         UserCryptoWallet userWallet = userCryptoWalletService.getWalletByUserAndAsset(user, asset);
@@ -94,6 +101,9 @@ public class P2POrderServiceImpl implements P2POrderService {
         userCryptoWalletService.updateBalance(userWallet.getId(), request.getAssetAmount().multiply(BigDecimal.valueOf(-1)), request.getAssetAmount());
     }
 
+    /**
+     * Load open order in db when application start
+     */
     @PostConstruct
     public void onApplicationStart() {
         log.info("Load open order in db");

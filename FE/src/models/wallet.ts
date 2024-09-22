@@ -1,9 +1,8 @@
 export interface Wallet {
-  icon: any;
   id: number;
   availableBalance: string;
   freezeBalance: string;
-  assetDto: Asset | null;
+  assetDto: Asset;
 }
 
 export interface Asset {

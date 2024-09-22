@@ -3,7 +3,7 @@ import axios from 'axios';
 import { HttpResponse } from '../models/http';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_BASE_GATEWAY_URL || 'http://localhost:8081',
+  baseURL: 'http://localhost:8080',
   headers: {
     'Content-Type': 'application/json',
   },

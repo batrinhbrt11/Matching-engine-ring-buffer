@@ -93,45 +93,62 @@ public class MatchingEngineServiceImpl implements MatchingEngineService {
      * @param incomingOrder
      * @param oppositeOrders
      * @param sameSideOrders
-     */ 
+     */
+    /**
+     * Get Incoming order and match with opposite orders
+     */
     private void matchOrder(P2POrder incomingOrder, PriorityQueue<P2POrder> oppositeOrders, PriorityQueue<P2POrder> sameSideOrders) {
-        // Loop until no more orders can be matched
-        while (!oppositeOrders.isEmpty() && canMatch(incomingOrder, oppositeOrders.peek())) {
-            P2POrder bestMatch = oppositeOrders.poll();
+        // Temporary queue to hold unmatched orders
+        PriorityQueue<P2POrder> unmatchedOrders = new PriorityQueue<>(oppositeOrders.comparator());
+
+        // Loop through all orders in oppositeOrders
+        while (!oppositeOrders.isEmpty()) {
+            P2POrder bestMatch = oppositeOrders.poll();  // Get the next order to match
+            // Check if the incoming order can match with the current bestMatch order
+            if (!canMatch(incomingOrder, bestMatch)) {
+                unmatchedOrders.offer(bestMatch);  // Add to unmatched orders if it can't match
+                continue;  // Move to the next order
+            }
+
+            // Calculate the traded quantity
             BigDecimal tradedQuantity = incomingOrder.getRemainingAmount().min(bestMatch.getRemainingAmount());
 
-            // Update remaining amount of incoming order and best match
+            // Update remaining amounts for both the incoming order and the best match
             incomingOrder.setRemainingAmount(incomingOrder.getRemainingAmount().subtract(tradedQuantity));
             bestMatch.setRemainingAmount(bestMatch.getRemainingAmount().subtract(tradedQuantity));
 
-            // Record transaction
+            // Record the transaction
             recordTransaction(incomingOrder, bestMatch, tradedQuantity);
 
-            // If best match still has remaining amount, add it back to opposite orders
-            if (BalanceUtils.isGT(bestMatch.getRemainingAmount(),BigDecimal.ZERO) ) {
-                oppositeOrders.offer(bestMatch);
-            }
-            // If best match has no remaining amount, set order status to success
-            else {
+            // If the best match still has remaining quantity, add it back to the unmatched orders
+            if (BalanceUtils.isGT(bestMatch.getRemainingAmount(), BigDecimal.ZERO)) {
+                unmatchedOrders.offer(bestMatch);
+            } else {
+                // If fully processed, set the status to success
                 bestMatch.setOrderStatus(OrderStatus.SUCCESS);
             }
-            // Save best match to database
+
+            // Save the best match to the database
             p2POrderRepository.save(bestMatch);
 
-            // If incoming order has no remaining amount, set order status to success
+            // If the incoming order is fully processed, set its status and return
             if (incomingOrder.getRemainingAmount().compareTo(BigDecimal.ZERO) == 0) {
                 incomingOrder.setOrderStatus(OrderStatus.SUCCESS);
                 p2POrderRepository.save(incomingOrder);
                 return;
             }
         }
-        // If incoming order still has remaining amount, add it back to same side orders
-        if (BalanceUtils.isGT(incomingOrder.getRemainingAmount(),BigDecimal.ZERO) ) {
+
+        // If the incoming order still has remaining amount, add it back to the same side orders
+        if (BalanceUtils.isGT(incomingOrder.getRemainingAmount(), BigDecimal.ZERO)) {
             sameSideOrders.offer(incomingOrder);
             incomingOrder.setOrderStatus(OrderStatus.OPEN);
         }
 
-        // Save incoming order to database
+        // Reassign the unmatched orders back to oppositeOrders
+        oppositeOrders.addAll(unmatchedOrders);
+
+        // Save the incoming order to the database
         p2POrderRepository.save(incomingOrder);
     }
 
@@ -152,6 +169,9 @@ public class MatchingEngineServiceImpl implements MatchingEngineService {
      * @return
      */
     private boolean canMatch(P2POrder incomingOrder, P2POrder existingOrder) {
+        log.info("incomingId: {} , assetId: {}", incomingOrder.getId(), incomingOrder.getAsset().getCoin().getSymbol());
+        log.info("existingId: {} , assetId: {}", existingOrder.getId(), existingOrder.getAsset().getCoin().getSymbol());
+
         // User can not buy or sell to himself
         if(incomingOrder.getUser().getId().equals(existingOrder.getUser().getId())) {
             return false;

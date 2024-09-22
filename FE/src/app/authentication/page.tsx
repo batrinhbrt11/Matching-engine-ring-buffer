@@ -4,6 +4,8 @@ import SignInForm from '@/components/auth/sign-in-form';
 
 // import images and icons
 import BitcoinImg from '@/assets/images/bit-coin.png';
+import AnchorLink from '@/components/ui/links/anchor-link';
+import routes from '@/config/routes';
 
 export default function SignIn() {
   return (
@@ -23,7 +25,7 @@ export default function SignIn() {
           </div>
 
           <SignInForm />
-          {/* <p className="text-sm tracking-[0.5px] text-[#4B5563] dark:text-gray-300">
+          <p className="text-sm tracking-[0.5px] text-[#4B5563] dark:text-gray-300">
             Not member yet?{' '}
             <AnchorLink
               href={routes.signUp}
@@ -31,7 +33,7 @@ export default function SignIn() {
             >
               Create an account
             </AnchorLink>
-          </p> */}
+          </p>
         </div>
       </div>
       <div className="relative hidden bg-[#F3F4F6] lg:block">

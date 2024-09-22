@@ -1,3 +1,5 @@
+import { Asset } from './wallet';
+
 export interface LoginFormRequestModel {
   email: string;
   password: string;
@@ -13,4 +15,11 @@ export interface RegisterFormRequestModel {
   email: string;
   password: string;
   phone: string;
+}
+
+export interface UserInfo {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
 }

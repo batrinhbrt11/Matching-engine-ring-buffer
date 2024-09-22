@@ -30,7 +30,7 @@ export default function CoinChange({
     <>
       <Listbox value={currentWallet} onChange={handleChangeWallet}>
         <div className="relative">
-          <Listbox.Button className="flex items-center gap-3 rounded-full bg-gray-100 p-2 py-1.5 pr-6 dark:bg-light-dark">
+          <Listbox.Button className="flex items-center gap-3 rounded-full bg-gray-100 p-2 py-1.5 pr-6 dark:bg-light-dark mb-4">
             <Image
               src={currentWallet.assetDto?.coin.image || ''}
               alt={currentWallet.assetDto?.coin.name || ''}

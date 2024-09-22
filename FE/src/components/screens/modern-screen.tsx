@@ -25,11 +25,15 @@ import orderApi from '@/api/orderApi';
 import OrderCard from '../trading-bot/order-form/OrderCard';
 import { getLocalStorage } from '@/utils/sessionStorage';
 import { useRouter } from 'next/navigation';
+import { UserInfo } from '@/models/auth';
+import authApi from '@/api/authApi';
 
 export default function ModernScreen() {
   const [cryptoWallets, setCryptoWallets] = useState<Wallet[]>();
   const [currentWallet, setCurrentWallet] = useState<Wallet>();
   const [orders, setOrders] = useState<OrderResponse[]>([]);
+  const [user, setUser] = useState<UserInfo>();
+  const [fiatWallet, setFiatWallet] = useState<Wallet>();
   const router = useRouter();
 
   useEffect(() => {
@@ -46,6 +50,21 @@ export default function ModernScreen() {
     }
   };
 
+  const getCryptoWalletNoneSet = async () => {
+    const { ok, body } = await walletApi.getCryptoWallet();
+    if (ok && body) {
+      setCryptoWallets(body);
+    }
+  };
+
+  const getWallet = async () => {
+    const { ok, body } = await walletApi.getWallet();
+
+    if (ok && body) {
+      setFiatWallet(body);
+    }
+  };
+
   const getOrders = async () => {
     const { ok, body } = await orderApi.getOrder();
     if (ok && body) {
@@ -53,8 +72,17 @@ export default function ModernScreen() {
     }
   };
 
+  const getUserInfo = async () => {
+    const { ok, body } = await authApi.getUser();
+    if (ok && body) {
+      setUser(body);
+    }
+  };
+
   useEffect(() => {
     getCryptoWallet();
+    getUserInfo();
+    getWallet();
   }, []);
 
   useEffect(() => {
@@ -71,42 +99,52 @@ export default function ModernScreen() {
 
   return (
     <>
-      {cryptoWallets && (
-        <CoinChange
-          cryptoWallets={cryptoWallets}
-          currentWallet={currentWallet}
-          handleChangeWallet={handleChangeWallet}
-        />
-      )}
       {currentWallet?.assetDto && (
         <div className="mt-4 grid grid-cols-12 gap-6 @container">
-          <div className="order-3  col-span-8 @[107.5rem]:order-1 ">
-            {orders && orders.length > 0 && (
-              <div className="h-full rounded-lg bg-white p-4 pb-6 shadow-card dark:bg-light-dark sm:px-6 2xl:px-8 2xl:pb-9">
-                <SimpleBar
-                  style={{ maxHeight: 450 }}
-                  className="-mx-0.5 px-0.5 @container"
-                >
-                  <div className="grid grid-cols-1 gap-3 @xs:grid-cols-2 @2xl:grid-cols-3 @6xl:grid-cols-4">
-                    {/* {.map((item) => (
+          <div className="order-3 col-span-full  @[107.5rem]:order-1  min-h-10">
+            <div className="h-full rounded-lg bg-white p-4 pb-6 shadow-card dark:bg-light-dark sm:px-6 2xl:px-8 2xl:pb-9">
+              <SimpleBar
+                style={{ maxHeight: 450 }}
+                className="-mx-0.5 px-0.5 @container"
+              >
+                <p className="mb-4">List Order</p>
+                <div className="grid grid-cols-1 gap-3 @xs:grid-cols-2 @2xl:grid-cols-3 @6xl:grid-cols-4">
+                  {/* {.map((item) => (
                       <CoinCard
                         key={`coin-card-details-${item.id}`}
                         details={item}
                       />
                     ))} */}
-                    {orders.map((item) => (
+                  {orders &&
+                    orders.length > 0 &&
+                    orders.map((item) => (
                       <OrderCard key={item.id} details={item} />
                     ))}
-                  </div>
-                </SimpleBar>
-              </div>
+                </div>
+              </SimpleBar>
+            </div>
+          </div>
+          {cryptoWallets && fiatWallet && (
+            <div className="order-2 col-span-full @4xl:col-span-6 @6xl:order-2 @7xl:order-2 @7xl:col-span-4 @[107.5rem]:order-3 @[107.5rem]:col-span-3">
+              <OrderForm
+                asset={currentWallet?.assetDto}
+                cryptoWallets={cryptoWallets}
+                fiatWallet={fiatWallet}
+                getWallet={getWallet}
+                getCryptoWallet={getCryptoWalletNoneSet}
+              />
+            </div>
+          )}
+
+          <div className="order-1  col-span-8 @[107.5rem]:order-2 ">
+            {cryptoWallets && (
+              <CoinChange
+                cryptoWallets={cryptoWallets}
+                currentWallet={currentWallet}
+                handleChangeWallet={handleChangeWallet}
+              />
             )}
-          </div>
-          <div className="order-1 col-span-full  @[107.5rem]:order-2 ">
             <TradingChart data={candlesDataTwo} volumeData={volumeData} />
-          </div>
-          <div className="order-2 col-span-full @4xl:col-span-6 @6xl:order-2 @7xl:order-2 @7xl:col-span-4 @[107.5rem]:order-3 @[107.5rem]:col-span-3">
-            <OrderForm asset={currentWallet?.assetDto} />
           </div>
         </div>
       )}
