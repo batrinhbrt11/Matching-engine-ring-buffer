@@ -169,8 +169,6 @@ public class MatchingEngineServiceImpl implements MatchingEngineService {
      * @return
      */
     private boolean canMatch(P2POrder incomingOrder, P2POrder existingOrder) {
-        log.info("incomingId: {} , assetId: {}", incomingOrder.getId(), incomingOrder.getAsset().getCoin().getSymbol());
-        log.info("existingId: {} , assetId: {}", existingOrder.getId(), existingOrder.getAsset().getCoin().getSymbol());
 
         // User can not buy or sell to himself
         if(incomingOrder.getUser().getId().equals(existingOrder.getUser().getId())) {
