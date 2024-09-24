@@ -99,9 +99,16 @@ export default function ModernScreen() {
 
   return (
     <>
+      {cryptoWallets && (
+        <CoinChange
+          cryptoWallets={cryptoWallets}
+          currentWallet={currentWallet}
+          handleChangeWallet={handleChangeWallet}
+        />
+      )}
       {currentWallet?.assetDto && (
         <div className="mt-4 grid grid-cols-12 gap-6 @container">
-          <div className="order-3 col-span-full  @[107.5rem]:order-1  min-h-10">
+          <div className="order-3 col-span-full   min-h-10">
             <div className="h-full rounded-lg bg-white p-4 pb-6 shadow-card dark:bg-light-dark sm:px-6 2xl:px-8 2xl:pb-9">
               <SimpleBar
                 style={{ maxHeight: 450 }}
@@ -125,7 +132,7 @@ export default function ModernScreen() {
             </div>
           </div>
           {cryptoWallets && fiatWallet && (
-            <div className="order-2 col-span-full @4xl:col-span-6 @6xl:order-2 @7xl:order-2 @7xl:col-span-4 @[107.5rem]:order-3 @[107.5rem]:col-span-3">
+            <div className="order-2 col-span-4 ">
               <OrderForm
                 asset={currentWallet?.assetDto}
                 cryptoWallets={cryptoWallets}
@@ -136,14 +143,7 @@ export default function ModernScreen() {
             </div>
           )}
 
-          <div className="order-1  col-span-8 @[107.5rem]:order-2 ">
-            {cryptoWallets && (
-              <CoinChange
-                cryptoWallets={cryptoWallets}
-                currentWallet={currentWallet}
-                handleChangeWallet={handleChangeWallet}
-              />
-            )}
+          <div className="order-1  col-span-8  ">
             <TradingChart data={candlesDataTwo} volumeData={volumeData} />
           </div>
         </div>

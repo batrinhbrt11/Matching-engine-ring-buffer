@@ -156,7 +156,7 @@ export default function TradingChart(props: any) {
   ]);
 
   return (
-    <div className="relative rounded-lg bg-white py-5 pe-0 pl-5 shadow-card dark:bg-light-dark 2xl:pl-8 3xl:h-full">
+    <div className="relative rounded-lg bg-white py-5 pe-0 pl-5 shadow-card dark:bg-light-dark 2xl:pl-8 3xl:h-full h-full">
       <div
         ref={chartContainerRef}
         className="h-[350px] w-full sm:h-[450px] 2xl:h-[550px] 3xl:h-[570px]"
